@@ -1,16 +1,16 @@
 import express from 'express'
+import pool from '../config/db.js'
 const router = express.Router()
 
-// Lista de produtos fictícios
-const products = [
-  { id: 1, name: 'Camiseta Premium', price: 99.9 },
-  { id: 2, name: 'Tênis Esportivo', price: 249.9 },
-  { id: 3, name: 'Relógio Clássico', price: 499.9 },
-]
-
 // GET /api/products
-router.get('/', (req, res) => {
-  res.json(products)
+router.get('/', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM products ORDER BY id')
+    res.json(result.rows)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Erro ao buscar produtos' })
+  }
 })
 
 export default router
